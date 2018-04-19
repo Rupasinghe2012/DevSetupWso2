@@ -54,10 +54,17 @@ Including an example of how to use your PlayBook :
       - API_AllInOne_Config
 ```
 
+How to Run
+----------------
+
+Please Refer this document to run the scripts
+
+https://medium.com/@Iruka.Avantha/quick-setup-for-wso2-apim-and-ei-for-developers-using-vagrant-ansible-2480b0080fe5
+
 License
 -------
 
-
+Apache License
 
 Author Information
 ------------------
