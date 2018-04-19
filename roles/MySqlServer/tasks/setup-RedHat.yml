@@ -1,0 +1,21 @@
+# Check and install MySQL packages
+
+- name: Ensure MySQL packages are installed. | RedHat
+  yum: "name={{ item }} state=installed update_cache=yes"
+  with_items: "{{ mysql_packages }}"
+  notify: restart mysql
+  tags: mysql_setup
+  
+- name: Ensure MySQL Python libraries are installed. | RedHat
+  yum: "name={{ mysql_driver }} state=installed update_cache=yes"
+  tags: mysql_setup
+
+- key: Add mappings to /etc/my.cnf
+  blockinfile:
+    path: /etc/my.cnf
+    block: |
+      {{ item.key }} = {{ item.value }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.key }}"
+    insertafter: '.mysqld]'
+  with_items:
+    - { key: max_connections, value: 10000 }

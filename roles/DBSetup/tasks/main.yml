@@ -1,0 +1,16 @@
+---
+
+  - name: "Making the temporary DB script folder"
+    file: 
+      dest: /tmp/dbscripts
+      mode: 0775 
+      state: directory
+    tags: install.ei
+
+  - import_tasks: mysql.yml
+    when: db_type == "mysql"
+    tags: install.tablecreations.postgres
+
+  - import_tasks: postgres.yml
+    when: db_type == "postgresql"
+    tags: install.tablecreations.postgres

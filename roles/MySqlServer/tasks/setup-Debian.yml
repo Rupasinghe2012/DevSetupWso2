@@ -1,0 +1,30 @@
+---
+
+# Check and install MySQL packages
+- name: Check if MySQL is already installed. | Debian
+  stat: path=/etc/init.d/mysql
+  register: mysql_installed
+  tags: mysql_setup
+
+- name: Update apt cache if MySQL is not yet installed. | Debian
+  apt: update_cache=yes
+  when: mysql_installed.stat.exists == false
+  tags: mysql_setup
+
+- name: Ensure MySQL Python libraries are installed. | Debian
+  apt: "name={{ mysql_driver }} state=installed"
+  when: mysql_installed.stat.exists == false
+  tags: mysql_setup
+
+- name: Ensure MySQL packages are installed. | Debian
+  apt: "name={{ item }} state=installed"
+  with_items: "{{ mysql_packages }}"
+  notify: restart mysql
+  when: mysql_installed.stat.exists == false
+  tags: mysql_setup
+
+
+- name: Commenting the Port Bind | Debian
+  lineinfile: "dest=/etc/mysql/mysql.conf.d/mysqld.cnf  regexp=^bind-address  line=#bind-address=127.0.0.1"
+  notify: restart mysql
+  tags: mysql_setup

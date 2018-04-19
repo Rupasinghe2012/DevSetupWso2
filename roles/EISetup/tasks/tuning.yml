@@ -1,0 +1,16 @@
+---
+
+- name: Ensure lxml python library installed
+  pip:
+    name: lxml
+    state: latest
+  tags: install.ei.configurations
+
+- name: Setting Commpression off to Due to a bug 
+  xml:
+    path: /opt/EI/wso2ei-6.1.1/conf/tomcat/catalina-server.xml
+    xpath: /Server/Service/Connector
+    attribute: compression
+    value: "off"
+    pretty_print: yes
+  tags: install.ei.configurations

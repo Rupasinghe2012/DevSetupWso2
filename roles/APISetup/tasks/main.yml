@@ -1,0 +1,102 @@
+---
+
+  - name: "Installing unzip | RedHat"
+    yum: 
+      name: unzip
+      state: latest
+    when: ansible_os_family == 'RedHat'
+    tags: install.api
+
+  - name: "Installing unzip | Debian"
+    apt:
+      pkg: unzip
+      state: latest
+    when: ansible_os_family == 'Debian'
+    tags: install.api
+
+  - name: get the hostname
+    command: "hostname"
+    register: command_output
+    tags: install.host
+
+  - set_fact:
+      localhostname: "{{ command_output.stdout }}"
+    tags: install.host
+
+  - name: "Adding hostname to localhost "
+    blockinfile:
+      path: /etc/hosts
+      block: |
+        127.0.0.1 {{ localhostname }}
+    tags: install.host
+
+  - import_tasks: user.yml
+    tags: install.api
+
+  - name: "Making the Home Path"
+    file:
+      dest: /opt/API_Manager
+      mode: 0775 
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      state: directory
+    tags: install.api
+
+  - name: Download file with custom HTTP headers
+    get_url:
+      url: https://product-dist.wso2.com/products/api-manager/2.1.0/wso2am-2.1.0.zip
+      dest: /tmp
+      headers: 'user-agent:"testuser",referer:http://connect.wso2.com/wso2/getform/reg/new_product_download'
+    when: clean_install == true
+    tags: install.api
+
+  - name: "Downloading the API package and Unzip"
+    unarchive:
+      src: /tmp/wso2am-2.1.0.zip
+      remote_src: yes
+      dest: /opt/API_Manager
+      owner: "{{ app_user }}" 
+      group: "{{ app_user }}"
+    when: clean_install == true
+    tags: install.api
+
+  - name: Removing the APIMAnager Downloads
+    file:
+      dest: /tmp/wso2am-2.1.0.zip
+      state: absent
+    when: clean_install == true
+    tags: install.api
+
+
+  - name: Define API_Home
+    set_fact:
+      API_Home: "/opt/API_Manager/wso2am-2.1.0"
+    when: API_Home is not defined
+    tags: install.java.env
+
+  - name: "Making the Product home path | Debian"
+    blockinfile:
+      path: ~/.bashrc
+      block: |
+        export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+        export PATH=${JAVA_HOME}/bin:${PATH}
+        export API_HOME={{ API_Home }}
+        export PATH=${API_HOME}/bin:${PATH}
+      insertafter: EOF 
+    when: ansible_os_family == 'Debian'
+    tags: install.java.env
+
+  - name: "Making the Product home path | RedHat"
+    blockinfile:
+      path: ~/.bashrc
+      block: |
+        export JAVA_HOME=/usr/java/jdk1.8.0_172-amd64/jre
+        export PATH=${JAVA_HOME}/bin:${PATH}
+        export API_HOME={{ API_Home }}
+        export PATH=${API_HOME}/bin:${PATH}
+      insertafter: EOF 
+    when: ansible_os_family == 'RedHat'
+    tags: install.java.env
+
+  - import_tasks: tuning.yml
+    tags: install.api.configurations

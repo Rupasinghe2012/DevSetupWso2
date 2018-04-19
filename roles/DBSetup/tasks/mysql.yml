@@ -1,0 +1,74 @@
+---
+
+  # copy db queries
+  - name: Copy the DB scripts
+    copy:
+      src: "{{ item }}"
+      dest: /tmp/dbscripts/
+    with_items:
+      - mysql_apim.sql
+      - mysql_common.sql
+      - mysql_mb.sql
+      - mysql5.7_apim.sql
+      - mysql5.7_common.sql
+    tags: manage:db.table.api
+
+  # apimgtdb Queries
+  - name: Excuting Query apimgtdb | mysql
+    mysql_db:
+      state: import
+      name: apimgtdb
+      target: "/tmp/dbscripts/mysql_apim.sql"
+    when: ansible_distribution_major_version == '7'
+    tags: manage:db.table.api
+
+  - name: Excuting Query in apimgtdb | mysql 5.7
+    mysql_db:
+      state: import
+      name: apimgtdb
+      target: "/tmp/dbscripts/mysql5.7_apim.sql"
+    when: ansible_os_family == 'Debian' or ansible_distribution_major_version == '6'
+    tags: manage:db.table.api
+
+  #userdb queries
+  - name: Excuting Query in userdb | mysql
+    mysql_db:
+      state: import
+      name: userdb
+      target: "/tmp/dbscripts/mysql_common.sql"
+    when: ansible_distribution_major_version == '7'
+    tags: manage:db.table.api
+
+  - name: Excuting Query in userdb | mysql 5.7
+    mysql_db:
+      state: import
+      name: userdb
+      target: "/tmp/dbscripts/mysql5.7_common.sql"
+    when: ansible_os_family == 'Debian' or ansible_distribution_major_version == '6'
+    tags: manage:db.table.api
+
+  #regdb queries
+  - name: Excuting Query in regdb | mysql 
+    mysql_db:
+      state: import
+      name: regdb
+      target: "/tmp/dbscripts/mysql_common.sql"
+    when: ansible_distribution_major_version == '7'
+    tags: manage:db.table.api
+
+
+  - name: Excuting Query in regdb | mysql 5.7
+    mysql_db:
+      state: import
+      name: regdb
+      target: "/tmp/dbscripts/mysql5.7_common.sql"
+    when: ansible_os_family == 'Debian' or ansible_distribution_major_version == '6'
+    tags: manage:db.table.api
+
+  #mbstoredb queries
+  - name: Excuting Query in mbstoredb
+    mysql_db:
+      state: import
+      name: mbstoredb
+      target: "/tmp/dbscripts/mysql_mb.sql"
+    tags: manage:db.table.api

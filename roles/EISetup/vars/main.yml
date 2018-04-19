@@ -1,0 +1,11 @@
+---
+# vars file for EISetup
+app_user: wso2user
+key_pub: id_rsa.pub
+key_piv: id_rsa
+Xms_Value: 2048
+Xmx_Value: 4096
+doc_root: /opt//EI/wso2ei-6.1.1
+wk_pool_size_core: 1600
+wk_pool_size_max: 2000
+max_host: 2000

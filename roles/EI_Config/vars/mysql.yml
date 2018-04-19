@@ -1,0 +1,5 @@
+---
+  db_host: carbondb.postgresql-wso2.com
+  db_port: 3306
+  db_daemon: mysql
+  db_driver: com.mysql.jdbc.Driver

@@ -1,0 +1,22 @@
+db_type: postgresql
+db_user: wso2admin
+db_password: wso2admin
+
+#If the DB type is Postgres use this variables
+postgresql_databases: [WSO2_USER_DB,REGISTRY_DB,apimgtdb,statdb,mbstoredb]
+postgresql_users:
+  - name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    role_attr_flags: SUPERUSER
+
+#If the DB type is Postgres use this variables
+mysql_databases:
+      - WSO2_USER_DB
+      - REGISTRY_DB
+      - apimgtdb
+      - statdb
+      - mbstoredb
+
+mysql_users:
+  - "{{ db_user }}"
+mysql_users_pass: "{{ db_password }}"

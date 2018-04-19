@@ -1,0 +1,28 @@
+#! /bin/sh
+{% if ansible_os_family == "Debian" %}
+export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+{% else %}
+export JAVA_HOME="/usr/java/jdk1.8.0_172-amd64/jre"
+{% endif %}
+
+startcmd='{{ doc_root }}/bin/wso2server.sh start > /dev/null &'
+restartcmd='{{ doc_root }}/bin/wso2server.sh restart > /dev/null &'
+stopcmd='{{ doc_root }}/bin/wso2server.sh stop > /dev/null &'
+ 
+case "$1" in
+start)
+   echo "Starting WSO2 API Manager Server ..."
+   su -c "${startcmd}" root
+;;
+restart)
+   echo "Re-starting WSO2 API Manager Server ..."
+   su -c "${restartcmd}" root
+;;
+stop)
+   echo "Stopping WSO2 API Manager Server ..."
+   su -c "${stopcmd}" root
+;;
+*)
+   echo "Usage: $0 {start|stop|restart}"
+exit 1
+esac

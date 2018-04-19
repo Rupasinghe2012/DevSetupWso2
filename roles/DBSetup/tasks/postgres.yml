@@ -1,0 +1,65 @@
+---
+
+  # copy db queries
+  - name: Copy the DB Scripts
+    copy:
+      src: "{{ item }}"
+      dest: /tmp/dbscripts/
+    with_items:
+      - postgresql_apim.sql
+      - postgresql_common.sql
+      - postgresql_mb.sql
+    tags: manage:db.table.api
+
+  # apimgtdb Queries
+  - name: Excuting Query apimgtdb | postgresql
+    postgresql_db:
+      state: restore
+      name: apimgtdb
+      target: /tmp/dbscripts/postgresql_apim.sql
+      owner: "{{ postgresql_user }}"
+    become: yes
+    become_user: "{{ postgresql_user }}"
+    vars:
+        ansible_ssh_pipelining: true
+    tags: manage:db.table.api
+
+  #userdb queries
+  - name: Excuting Query in WSO2_USER_DB | postgresql
+    postgresql_db:
+      state: restore
+      name: WSO2_USER_DB
+      target: /tmp/dbscripts/postgresql_common.sql
+      owner: "{{ postgresql_user }}"
+    become: yes
+    become_user: "{{ postgresql_user }}"
+    vars:
+        ansible_ssh_pipelining: true
+    tags: manage:db.table.api
+
+  #regdb queries
+  - name: Excuting Query in REGISTRY_DB | postgresql 
+    postgresql_db:
+      state: restore
+      name: REGISTRY_DB
+      target: /tmp/dbscripts/postgresql_common.sql
+      owner: "{{ postgresql_user }}"
+    become: yes
+    become_user: "{{ postgresql_user }}"
+    vars:
+        ansible_ssh_pipelining: true
+    tags: manage:db.table.api
+
+
+  #mbstoredb queries
+  - name: Excuting Query in mbstoredb  | postgresql 
+    postgresql_db:
+      state: restore
+      name: mbstoredb
+      target: /tmp/dbscripts/postgresql_mb.sql
+      owner: "{{ postgresql_user }}"
+    become: yes
+    become_user: "{{ postgresql_user }}"
+    vars:
+        ansible_ssh_pipelining: true
+    tags: manage:db.table.api

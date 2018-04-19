@@ -1,0 +1,8 @@
+---
+# vars file for EISetup
+app_user: wso2user
+key_pub: id_rsa.pub
+key_piv: id_rsa
+domain: moneta.com
+XMS: 4096
+XMX: 4096

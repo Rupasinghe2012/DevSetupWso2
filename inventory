@@ -1,0 +1,23 @@
+controller ansible_connection=local
+
+ 
+
+[ei:vars]
+product=EI
+
+[api:vars]
+product=API
+
+[dbservers]
+node3      ansible_ssh_host=172.17.177.23 ansible_user=vagrant  ansible_ssh_pass=vagrant
+
+[ei]
+node1      ansible_ssh_host=172.17.177.21 ansible_user=vagrant ansible_ssh_pass=vagrant 
+
+[api]
+node2      ansible_ssh_host=172.17.177.22 ansible_user=vagrant  ansible_ssh_pass=vagrant 
+
+[cluster:children]
+ei
+api
+dbservers

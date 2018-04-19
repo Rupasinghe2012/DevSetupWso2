@@ -1,0 +1,59 @@
+--- 
+- hosts: cluster
+  become: true
+  become_user: root
+  tasks:
+    - setup:
+    - name: installing epel-release
+      yum:
+        name: epel-release
+    - name: installing pip
+      yum:
+        name: python-pip
+        state: latest
+
+- hosts: dbservers
+  gather_facts: no
+  become: true
+  become_user: root
+  vars_files:
+    - vars/main.yml
+  roles:
+      - { role: Postgresql, when: db_type == 'postgresql' }
+      - { role: MySqlServer, when: db_type == 'mysql' }
+      - DBSetup
+
+
+- hosts: ei
+  gather_facts: no
+  become: true
+  become_user: root
+  vars_files:
+    - vars/main.yml
+  pre_tasks:
+    - name: Setting the DB Private IP
+      set_fact: db_ip="{{ hostvars[item]['ansible_enp0s8']['ipv4']['address'] }}"
+      with_items:
+        - "{{ groups['dbservers'] }}"
+  roles:
+      - Java8
+      - EISetup
+      - Jar
+      - EI_Config
+
+- hosts: api
+  gather_facts: no
+  become: true
+  become_user: root
+  vars_files:
+    - vars/main.yml
+  pre_tasks:
+    - name: Setting the DB Private IP
+      set_fact: db_ip="{{ hostvars[item]['ansible_enp0s8']['ipv4']['address'] }}"
+      with_items:
+        - "{{ groups['dbservers'] }}"
+  roles:
+      - Java8
+      - APISetup
+      - Jar
+      - API_AllInOne_Config

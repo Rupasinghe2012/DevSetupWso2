@@ -1,0 +1,4 @@
+---
+domain: mitra.ei.com 
+doc_root: /opt/EI/wso2ei-6.1.1
+app_user: wso2user

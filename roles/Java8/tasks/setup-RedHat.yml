@@ -1,0 +1,43 @@
+---
+
+  - name: Downloading the Lates JAVA RPM
+    get_url:
+          url: http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/jdk-8u172-linux-x64.rpm
+          dest: /opt
+          mode: 0744
+          headers: 'Cookie: oraclelicense=accept-securebackup-cookie'
+    register: result
+    retries: 3
+    delay: 3
+    until: result | success
+    tags: install.java
+
+  - name: install Java
+    yum:
+      name: /opt/jdk-8u172-linux-x64.rpm
+      state: present
+    register: result
+    retries: 3
+    delay: 3
+    until: result | success
+    tags: install.java
+
+  - name: set Java version as default
+    alternatives:
+      name: java
+      link: "/usr/bin/java"
+      path: "/usr/java/jdk1.8.0_172-amd64/jre/bin/java"
+    tags: install.java
+
+  - name: Removing the RPM file
+    file:
+      dest: /opt/jdk-8u172-linux-x64.rpm
+      state: absent
+    tags: install.java
+
+  - name: ADD Environment Variables     
+    lineinfile: 
+      dest: /etc/environment
+      regexp: ^JAVA_HOME=
+      line: JAVA_HOME=/usr/java/jdk1.8.0_172-amd64/jre
+    tags: install.java

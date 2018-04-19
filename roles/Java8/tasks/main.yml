@@ -1,0 +1,10 @@
+---
+
+  # Setup/install tasks.
+  - import_tasks: setup-RedHat.yml
+    when: ansible_os_family == 'RedHat'
+    tags: install.java
+
+  - import_tasks: setup-Debian.yml
+    when: ansible_os_family == 'Debian'
+    tags: install.java

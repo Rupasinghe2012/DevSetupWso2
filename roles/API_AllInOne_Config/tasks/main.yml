@@ -1,0 +1,54 @@
+--- 
+  - name: Include DB-specific variables.
+    include_vars: "{{ item }}"
+    with_first_found:
+      - files:
+        - "vars/{{ db_type }}.yml"
+        skip: true
+
+  - name: Set DNS for DB    
+    lineinfile:
+      dest: /etc/hosts
+      regexp: "{{ db_ip }}"
+      line: '{{ db_ip }} {{ db_host }}'
+    tags: install.api.configuration
+
+  - name: Copy the master-datasources.xml 
+    template: 
+      src: master-datasources.xml.j2
+      dest: "{{ doc_root }}/repository/conf/datasources/master-datasources.xml"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: 0644
+    tags: install.app.api.allInOne.configuration
+
+  - name: Copy the user-mgt.xml
+    template:
+      src: user-mgt.xml.j2
+      dest: "{{ doc_root }}/repository/conf/user-mgt.xml"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: 0644
+    tags: install.app.api.allInOne.configuration
+
+  - name: Copy the registry.xml
+    template:
+      src: registry.xml.j2
+      dest: "{{ doc_root }}/repository/conf/registry.xml"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: 0644
+    tags: install.app.api.allInOne.configuration
+
+  - name: Copy the Ini.d Script
+    template:
+      src: api.j2
+      dest: /etc/init.d/api 
+      owner: root
+      group: root
+      mode: 0744
+    tags: install.app.api.allInOne.configuration
+
+  - name: Starting API Server
+    command : sudo service api start
+    tags: install.api

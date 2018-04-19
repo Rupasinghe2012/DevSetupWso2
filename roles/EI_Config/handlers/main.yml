@@ -1,0 +1,9 @@
+---
+# handlers file for EI
+- name: restart esb
+  service: "name=esb state=restarted sleep=5"
+
+
+# handlers file for EI
+- name: start esb
+  service: "name=esb state=started sleep=5"

@@ -1,0 +1,34 @@
+---
+
+- name:  adding Oracle Java8 repo| Debian
+  apt_repository:
+    repo: ppa:webupd8team/java
+    state: present
+  tags: install.java
+
+- name: "Autoaccept license for Java | Debian"
+  action: "shell echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections"
+  tags: install.java
+      
+- name: "Install Java 8 | Debian"
+  apt:
+    name: oracle-java8-installer
+    state: latest
+    install_recommends: yes
+    cache_valid_time: 3600
+    update_cache: yes
+  tags: install.java
+
+- name: "Set Java 8 Env | Debian"
+  apt:
+    name: oracle-java8-set-default
+    state: latest
+    install_recommends: yes
+  tags: install.java
+
+- name: ADD Environment Variables | Debian    
+  lineinfile:
+    dest: /etc/environment
+    regexp: ^JAVA_HOME
+    line: JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  tags: install.java

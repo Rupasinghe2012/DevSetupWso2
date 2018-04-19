@@ -1,0 +1,10 @@
+---
+
+  #Api Manger related domains
+  domain: am.mitra.com  
+
+  #App related Vars
+  doc_root: /opt/API_Manager/wso2am-2.1.0
+  app_user: wso2user
+  local_port: 4300
+  offset: 0

@@ -1,0 +1,20 @@
+---
+  - name: Downloading  the  postgresql Jar Files API
+    get_url:
+      url: https://jdbc.postgresql.org/download/postgresql-42.2.2.jar
+      dest: "{{ EI_Home}}/lib"
+      owner: "{{ app_user }}" 
+      group: "{{ app_user }}"
+      mode: 0740
+    when: product == "EI"
+    tags: install.jar
+
+  - name: "Downloading the postgresql Jar Files API"
+    get_url:
+      url: https://jdbc.postgresql.org/download/postgresql-42.2.2.jar
+      dest: "{{ API_Home}}/wso2am-2.1.0/repository/components/lib"
+      owner: "{{ app_user }}" 
+      group: "{{ app_user }}"
+      mode: 0740
+    when: product == "API"
+    tags: install.jar

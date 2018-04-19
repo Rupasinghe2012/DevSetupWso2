@@ -1,0 +1,65 @@
+--- 
+  - name: Include DB-specific variables.
+    include_vars: "{{ item }}"
+    with_first_found:
+      - files:
+        - "vars/{{ db_type }}.yml"
+        skip: true
+
+  - name: Copy the master-datasources.xml 
+    template:
+      src: master-datasources.xml.j2
+      dest: "{{ doc_root }}/conf/datasources/master-datasources.xml"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}" 
+      mode: 0644
+    tags: install.ei.configuration
+
+  - name: Copy the user-mgt.xml
+    template:
+      src: user-mgt.xml.j2
+      dest: "{{ doc_root }}/conf/user-mgt.xml"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: 0644
+    tags: install.ei.configuration
+
+  - name: Copy the registry.xml
+    template:
+      src: registry.xml.j2
+      dest: "{{ doc_root }}/conf/registry.xml"
+      owner: "{{ app_user }}" 
+      group: "{{ app_user }}"
+      mode: 0644
+    tags: install.ei.configuration
+
+
+  - name: Set DNS for DB    
+    lineinfile:
+      dest: /etc/hosts
+      regexp: "{{ db_ip }}"
+      line: '{{ db_ip }} {{ db_host }}'
+    tags: install.ei.configuration
+
+  - name: Copy the carbon.XMl
+    template:
+      src: carbon.xml.j2
+      dest: "{{ doc_root }}/conf/carbon.xml"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: 0644
+    tags: install.ei.configuration
+
+  - name: Copy the Ini.d Script
+    template:
+      src: esb.j2
+      dest: /etc/init.d/esb
+      owner: root
+      group: root
+      mode: 0744
+    tags: install.ei.configuration
+
+  - name: Starting ei Server
+    command : sudo service esb start
+    tags: install.esb
+

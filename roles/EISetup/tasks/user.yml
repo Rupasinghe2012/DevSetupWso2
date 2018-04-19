@@ -1,0 +1,24 @@
+---
+
+  - name: Creating App user
+    user:
+      name: "{{ app_user }}"
+      shell: /bin/bash
+    tags: install.ei.user
+
+  - name: Add sudoers users to wheel group
+    user:
+      name: "{{ app_user }}"
+      groups: wheel
+      append: yes
+      state: present
+      createhome: yes
+    tags: install.ei.user
+
+  - name: "Adding user to Sudoers "
+    blockinfile:
+      path: /etc/sudoers
+      block: |
+        {{ app_user }}      ALL=(ALL)       NOPASSWD: ALL
+      insertafter: EOF 
+    tags: install.ei.user

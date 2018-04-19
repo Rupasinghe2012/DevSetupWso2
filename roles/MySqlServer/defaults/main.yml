@@ -1,0 +1,3 @@
+---
+# defaults file for mysql_server
+table_creation: true

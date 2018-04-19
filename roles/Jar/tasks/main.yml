@@ -1,0 +1,7 @@
+---
+
+  - import_tasks: mysql.yml
+    tags: install.jar.mysql
+
+  - import_tasks: postgres.yml
+    tags: install.jar,postgres

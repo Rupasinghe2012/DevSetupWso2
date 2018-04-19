@@ -1,0 +1,5 @@
+---
+  db_host: carbondb.postgresql-wso2.com
+  db_port: 5432
+  db_daemon: postgresql
+  db_driver: org.postgresql.Driver
